@@ -7,3 +7,5 @@ npm init -y
 ```
 npm install express mongoose socket.io -S
 ```
+
+# 安装并布署服务器
