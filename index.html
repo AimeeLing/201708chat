@@ -32,5 +32,19 @@
         </div>
     </div>
 </div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+//引入这个脚本后，会在window下挂一个io的属性，通过它可以连接服务器
+  let socket = io();
+  //在连接成功之后就会执行对应的函数
+  socket.on('connect',function(){
+     console.log('客户端连接成功');
+     socket.send('你好');
+  });
+  //监听服务器发过来的消息
+  socket.on('message',function(message){
+    console.log(message);
+  });
+</script>
 </body>
 </html>
