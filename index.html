@@ -14,17 +14,17 @@
                     <h4 class="text-center">欢迎光临珠峰聊天室</h4>
                 </div>
                 <div class="panel-body">
-                    <ul class="list-group">
+                    <ul class="list-group" id="messages">
 
                     </ul>
                 </div>
                 <div class="panel-footer">
                     <div class="row">
                         <div class="col-md-10">
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="txtMsg" onkeydown="handleKeyDown(event)">
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-primary">发言</button>
+                            <button onclick="send()" class="btn btn-primary">发言</button>
                         </div>
                     </div>
                 </div>
@@ -36,6 +36,8 @@
 <script>
 //引入这个脚本后，会在window下挂一个io的属性，通过它可以连接服务器
   let socket = io();
+  let txtMsg = document.querySelector('#txtMsg');
+  let ulMessages = document.querySelector('#messages');
   //在连接成功之后就会执行对应的函数
   socket.on('connect',function(){
      console.log('客户端连接成功');
@@ -43,8 +45,21 @@
   });
   //监听服务器发过来的消息
   socket.on('message',function(message){
-    console.log(message);
+    let li = document.createElement('li');
+    li.innerHTML = message;
+    li.className = 'list-group-item';
+    ulMessages.appendChild(li);
   });
+  function send(){
+    let val = txtMsg.value;//获取文本框的值
+    //把消息发送给服务器
+    socket.send(val);
+    txtMsg.value =  '';
+  }
+  function handleKeyDown(event){
+    if(event.keyCode == 13)
+      send();
+  }
 </script>
 </body>
 </html>

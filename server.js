@@ -16,10 +16,7 @@ let io = require('socket.io')(server);
 io.on('connection',function(socket){
   //监听客户端发过来的消息
   socket.on('message',function(data){
-    console.log(data);
-    //向当前的特定的客户端发消息
-    socket.send(`服务器回应:${data}`);
-    //向所有的客户端发送消息 --广播
+   //广播给所有的客户端
     io.emit('message',data);
   });
 });
