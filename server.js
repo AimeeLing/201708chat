@@ -1,5 +1,6 @@
 //引入express
 let express = require('express');
+let {Message} = require('./model');
 //引入socket.io
 let path = require('path');
 let app = express();
@@ -15,9 +16,21 @@ let io = require('socket.io')(server);
 //每个客户端都有一个自己的socket
 io.on('connection',function(socket){
   //监听客户端发过来的消息
-  socket.on('message',function(data){
-   //广播给所有的客户端
-    io.emit('message',data);
+  socket.on('message',function(content){
+    //当收到客户端发过来的消息的时候保存到数据库里
+    let message = {content};
+    Message.create(message,function(err,doc){
+      //广播给所有的客户端
+      io.emit('message',doc);//_id
+    });
+  });
+  //监听客户端获取全部消息的事件
+  socket.on('getAllMessages',function(){
+    Message.find().sort({createAt:-1}).limit(10).exec(function(err,messages){
+      //向客户端发送全量消息
+      messages.reverse();
+      socket.emit('allMessages',messages);
+    });
   });
 });
 
